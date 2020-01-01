@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	<!--Configuration de la durée maximum d'inactivité d'une session utilisateur
+	pour cette application web.-->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
+
+	<!--Configuration de la servlet TicketCtrler-->
+	<servlet>
+		<servlet-name>TicketSenderCtrler</servlet-name>
+		<servlet-class>im2ag.m2cci.p01.ctrler.TicketsCtrler</servlet-class>
+		<!--Paramètres d'initialisation de la servlet. Ils sont récupérés à
+		l'initalisation de la servlet, lors de son chargement par le container
+		(Tomcat).-->
+		<!--Paramètres d'initialisation de la servlet. Ils sont récupérés à
+		l'initalisation de la servlet, lors de son chargement par le container
+		(Tomcat).-->
+		<init-param>
+			<!--serveur smtp-->
+			<param-name>smtp_server</param-name>
+			<param-value>smtps.univ-grenoble-alpes.fr</param-value>
+		</init-param>
+		<init-param>
+			<!--port serveur smtp-->
+			<param-name>smtp_port</param-name>
+			<param-value>587</param-value>
+		</init-param>
+		<init-param>
+			<!--nom utilisateur mail-->
+			<param-name>mail_user_name</param-name>
+			<param-value>elkhatay</param-value>
+		</init-param>
+		<init-param>
+			<!--mot de passe utilisateur mail-->
+			<param-name>mail_user_passwd</param-name>
+			<param-value>Jnspnl02011983</param-value>
+		</init-param>
+		<init-param>
+			<!--adresse mail pour l'expéditeur-->
+			<param-name>sender</param-name>
+			<param-value>Philippe.Genoud@univ-grenoble-alpes.fr</param-value>
+		</init-param>
+		<init-param>
+			<!--le titre (objet) du mail-->
+			<param-name>title</param-name>
+			<param-value>Votre ticket électronique   !!!</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<!--définition de l'URL pour cette servlet-->
+		<servlet-name>TicketSenderCtrler</servlet-name>
+		<url-pattern>/sendTicket</url-pattern>
+	</servlet-mapping>
+
+	<!--Definition de la ressource Session pour le mail-->
+	<resource-ref>
+		<res-ref-name>mail/DEMO</res-ref-name>
+		<res-type>javax.mail.Session</res-type>
+	</resource-ref>
+</web-app>

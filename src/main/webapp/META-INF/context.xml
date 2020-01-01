@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/MyTheatreGP01">
+  <Resource auth="Container" 
+            driverClassName="org.sqlite.JDBC" 
+            maxIdle="3" 
+            maxTotal="10" 
+            maxWaitMillis="10000" 
+            name="jdbc/MyTheatre" 
+            type="javax.sql.DataSource" 
+            url="jdbc:sqlite:CHEMIN_ABSOLU/m2cci-1819-pi-GP01/sql/database_prod.sqlite3"/>
+
+</Context>

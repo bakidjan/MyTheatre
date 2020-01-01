@@ -1,0 +1,179 @@
+--=========================================================================
+--                          Class Model
+---------------------------------------------------------------------------
+-- This glossary model is expressed in GlossaryScript.
+-- See https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html
+-- ClassScript1 is an annotated version of USE OCL.
+-- Annotations are in comments and start with
+--    "@" for statement annotations
+--    "|" for documentation annotations
+--=========================================================================
+--
+--@ class model MyTheatre
+--@ import glossary model from "../glossaries/glossaries.gls"
+
+model MyTheatre
+
+------------------------------------------------------------------
+-- Enumerations
+------------------------------------------------------------------
+
+enum CategorieTarifaire {
+    orchestre,
+    balcon,
+    poulailler
+}
+
+------------------------------------------------------------------
+-- Classes
+------------------------------------------------------------------
+
+-- laisser 70 places en vente une heure avant le spectacle
+
+class Spectacle
+    attributes
+        _numero_ : Integer
+        nom : String
+        img : Integer --@ Blob
+end
+
+class Representation
+    attributes
+        _date_ : String --@ {Date}
+        _heure_ : String --@ {Time}
+        id : Integer --@ AUTOINCREMENT
+        nbPlacesDispo : Integer
+end
+
+class Zone
+    attributes
+        _numero_ : Integer
+        nom : String --@ CategorieTarifaire.toString
+        prix : CategorieTarifaire --@ unique
+end
+
+class Place
+    attributes
+        _id_ : Integer --@ AUTOINCREMENT
+        _rang_ : Integer
+        _numero_ : Integer
+end
+
+class DossierDAchat
+    attributes
+        _numero_ : Integer
+        prix : Integer -- derived
+        dateDAchat : String --@ {Date + Time} jusqu'à la seconde (derived)
+        estPaye : Boolean
+end
+
+
+associationclass Ticket
+    between
+        Representation[0..*] role representations
+        Place[0..*] role places
+    attributes
+        _numero_ : Integer
+end
+
+------------------------------------------------------------------
+-- Contraintes
+------------------------------------------------------------------
+
+
+constraints
+
+--@ constraint NumeroDePlace
+--@     scope
+--@         Place
+--@         Place._numero_
+--@     | le numéro de Place est toujours supérieur à zéro.
+
+--@ constraint NumeroDeZone
+--@     scope
+--@         Zone
+--@         Zone._numero_
+--@     | le numéro de Zone est toujours supérieur à zéro.
+
+--@ constraint NumeroDeDossierDAchat
+--@     scope
+--@         DossierDAchat
+--@         DossierDAchat._numero_
+--@     | le numéro de DossierDAchat est toujours supérieur à zéro.
+
+--@ constraint NumeroDeSpectacle
+--@     scope
+--@         Spectacle
+--@         Spectacle._numero_
+--@     | le numéro de Spectacle est toujours supérieur à zéro.
+
+--@ constraint NombreDePlacesDisponibles
+--@     scope
+--@         Place
+--@         Zone
+--@         Representation
+--@         Appartient
+--@         Ticket
+--@         places
+--@         placesPhysiques
+--@         zone
+--@         Representation.nbPlacesDispo
+--@     | le nbPlacesDispo d'une Representation est inférieur ou égal à la somme de placesPhysiques dans toutes les différentes zone
+--@     | le nbPlacesDispo d'une Representation est égal à la différence entre la somme de placesPhysiques dans toutes les différentes
+--@     | zone et le nombre total de Ticket (i.e. places reservées).
+
+--@ constraint DateDAchatSurDossierDAchat
+--@     scope
+--@         DossierDAchat
+--@         Representation
+--@         DossierDAchat.dateDAchat
+--@         Representation._date_
+--@         Representation._heure_
+--@     | La date marquée sur le DossierDAchat (exprimée à la granularité de la seconde) doit etre avant la date et heure de Representation
+--@     | correspondante aux Tickets appartenant à ce DossierDAchat.
+
+--@ constraint PrixDossierDAchat
+--@     scope
+--@         DossierDAchat
+--@         DossierDAchat.prix
+--@     | Le prix global marqué sur le DossierDAchat est toujours supérieur à zéro.
+
+--@ constraint PrixZone
+--@     scope
+--@         Zone
+--@         Zone.prix
+--@     | Le prix de Zone est toujours supérieur à zéro, et il est fixe et égal à la tarifDeBase de Categorie à laquelle apprtient cette Zone.
+--@     | Si la zone appartient à la CategorieTarifaire  "poulailler" le prix d'un placement dans cette zone est fixé à 15€.
+--@     | Sinon, si la zone appartient à la CategorieTarifaire  "balcon" le prix d'un placement dans cette zone est fixé à 20€.
+--@     | Sinon, si la zone appartient à la CategorieTarifaire  "orchestre" le prix d'un placement dans cette zone est fixé à 25€.
+
+--@ constraint PrixDossierDAchatVsPrixZone
+--@     scope
+--@         DossierDAchat
+--@         Zone
+--@         DossierDAchat.prix
+--@         Zone.prix
+--@     | Sachant que le prix global marqué sur le DossierDAchat est la somme de prix de Ticket contenus dans ce DossierDAchat, le prix global de DossierDAchat
+--@     | doit etre toujours supérieur ou égal au prix (tarifDeBase) de Zone à laquelle appartiennent ces Tickets.
+
+------------------------------------------------------------------
+-- Associations
+------------------------------------------------------------------
+
+association Propose
+    between
+        Spectacle[1] role spectacleRepresente
+        Representation[1..*] role representationsProposees
+end
+
+composition Appartient
+    between
+        Zone[1] role zone
+        Place[1..*] role placesPhysiques
+end
+
+association EstDossierDAchat
+    between
+        DossierDAchat[1] role vente
+        Ticket[1..*] role placesAchetees
+end

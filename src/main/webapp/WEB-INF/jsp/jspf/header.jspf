@@ -1,0 +1,171 @@
+<%-- any content can be specified here e.g.: --%>
+<%@page import="im2ag.m2cci.p01.model.Spectacle"%>
+<%@page pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+<%@page import="javax.sql.DataSource"%>
+<%@page import="im2ag.m2cci.p01.dao.ConsultationDAO"%>
+<%@page import="javax.naming.Context"%>
+<%@page import="javax.naming.InitialContext"%>
+<nav class="page-header fixed-top">
+  <div class="row">
+    <div class="col-sm-4 h-logo">
+      <a href="."><img src="images/logo.png" alt="" /></a>
+    </div>
+
+    <div id="btnHeader" class="col-sm-8">
+      <div class="row float-right">
+        <div class="col-2">
+          <button id="btnSearch" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapsibleFieldset">
+            <i id="icon-search" class="fas fa-search"></i>
+          </button>
+        </div>
+        <%if (session != null && session.getAttribute("userId") != null) {%>
+        <div class="col-10">
+          <form action="logout">
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend" id="labBienvenue">
+                  <label class="input-group-text">Bienvenue <%=(String) session.getAttribute("userId")%> !</label>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-user-times"></i> Se déconnecter
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <%} else {%>
+        <div class="col-5">
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#userModal">
+            <i id="icon-user" class="fas fa-user-lock"></i> S'identifier
+          </button>
+        </div>
+        <div class="col-5">
+          <form action="createAccount">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-user-plus"></i> S'inscrire
+            </button>
+          </form>
+        </div>
+        <%}%>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapse navbar-collapse" id="collapsibleFieldset">
+
+    <form action="spectacle" id="reservation-form">
+
+      <div class="form-row">
+        <div class="col-md-7">
+          <div class="input-group input-group-md">
+            <div class="input-group-prepend">
+              <label class="input-group-text">Afficher les représentations entre le</label>
+            </div>
+            <input id="DateDeb" class="form-control" name="date1" type="date" value="" min="1899-01-01" max="2100-12-31" onclick="setToday();" pattern="\d{4}-\d{1,2}-\d{1,2}" title="The format must be YYYY-MM-DD"/>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="input-group input-group-md">
+            <div class="input-group-prepend">
+              <label class="input-group-text">et le&nbsp;<i>(optionnel)</i></label>
+            </div>
+            <input id="DateFin" class="form-control" name="date2" data-toggle="tooltip" title="donnez une date si vous voulez borner votre recherche" type="date" value="" min="1899-01-01" max="2100-12-31" onclick="setDatePlusUn();" pattern="\d{4}-\d{1,2}-\d{1,2}" title="The format must be YYYY-MM-DD"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <select id="genreSelect" name="genre" class="selectpicker form-control" data-actions-box="true" data-selected-text-format="count > 2" title="Genre(s)" multiple>
+              <%
+              InitialContext ic = new InitialContext();
+              // that's everything from the context.xml and from the global configuration
+              Context xmlContext = (Context) ic.lookup("java:comp/env");
+              DataSource dataSource = (DataSource) xmlContext.lookup("jdbc/MyTheatre");
+
+              List<String> allGenres = ConsultationDAO.getAllGenres(dataSource);
+              %>
+              <%for (String genre : allGenres) {%>
+              <option value="<%=genre%>"><%=Character.toUpperCase(genre.charAt(0)) + genre.substring(1)%></option>
+              <%}%>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <select id="ageSelect" name="public" class="selectpicker form-control" data-actions-box="true" data-selected-text-format="count" title="Public" multiple>
+              <%
+              List<Integer> allAges = ConsultationDAO.getAllAgeClassifications(dataSource);
+              Collections.sort(allAges);
+              %>
+              <%for (int age : allAges) {%>
+              <option value="<%=age%>"><%=(age == 0) ? "tout public" : "moins de " + age + " ans"%></option>
+              <%}%>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <select class="selectpicker form-control" data-live-search="true" id="spectacles" name="spectacleNom">
+              <option value=""></option>
+              <%
+              List<Spectacle> spectacleName = ConsultationDAO.getAllSpectacles(dataSource);
+              %>
+              <%for (Spectacle spec : spectacleName) {%>
+              <option value="<%= spec.getNom()%>"><%= spec.getNom()%></option>
+              <%}%>
+            </select>
+            <!--
+            <select id="nameSelect" name="spectacleNom" class="selectpicker form-control" data-actions-box="true" data-selected-text-format="count" title="Spectacle" multiple>
+          </select>
+        -->
+      </div>
+    </div>
+  </div>
+  <div class="form-row float-right">
+    <input id="search-btn" class="btn btn-info btn-md float-right" type="submit" value="Rechercher" />
+  </div>
+</form>
+
+</div>
+
+<div class="collapse navbar-collapse" id="userModal">
+  <form class="form-inline float-right" action="validateAccount" method="post">
+    <div class="form-row">
+      <div class="form-group mb-2">
+        <label for="inputId" class="sr-only">Identifiant</label>
+        <input type="text" class="form-control" id="inputId" name="inputId" placeholder="Identifiant"/>
+      </div>
+      <div class="form-group mx-sm-3 mb-2">
+        <label for="inputPassword" class="sr-only">Mot de passe</label>
+        <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Password"/>
+      </div>
+      <button type="submit" class="btn btn-primary mb-2">
+        <i class="fas fa-lock-open"></i> Se connecter
+      </button>
+    </div>
+  </form>
+  <!--<div id='errorMsg'>${errorMessage}</div>-->
+</div>
+
+</nav>
+<script>
+/* to change the icon (loupe ou croix) */
+$('#btnSearch').click(function () {
+  let icon = $('#icon-search');
+  if (icon.hasClass('fa-search')) {
+    icon.addClass('fa-times').removeClass('fa-search');
+    document.getElementById('reservation-form').reset();
+    setToday();
+  } else {
+    icon.addClass('fa-search').removeClass('fa-times');
+  }
+});
+/* to adapt the date input to all browser */
+if ($('[type="date"]').prop('type') !== 'date') {
+  $('[type="date"]').datepicker();
+}
+</script>

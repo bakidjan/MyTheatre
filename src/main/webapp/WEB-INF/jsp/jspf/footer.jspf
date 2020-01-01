@@ -1,0 +1,22 @@
+<%@ page pageEncoding="UTF-8" %>
+<div class="page-footer">
+
+  <div class = "row">
+    <div class="col-sm-2">
+      <p>Groupe 01</p>
+    </div>
+    <div class="col-sm-5">
+      <p>Email : <a href="mailto:43611658+m2cci-TDP@users.noreply.github.com" class="disabled">groupe01@github.com</a></p>
+    </div>
+
+    <div class="col-sm-5">
+      <div class=social>
+        <a href="#" class="disabled"><i class="fab fa-facebook-square"></i></a>
+        <a href="#" class="disabled"><i class="fab fa-twitter-square"></i></a>
+        <a href="#" class="disabled"><i class="fab fa-dribbble-square"></i></a>
+        <a href="#" class="disabled"><i class="fab fa-pinterest-square"></i></a>
+      </div>
+    </div>
+  </div>
+
+</div>

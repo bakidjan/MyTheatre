@@ -1,0 +1,170 @@
+@font-face {
+	font-family: 'AmbleRegular';
+	src: url( ../fonts/Amble-Light-webfont.ttf ) format("truetype");
+}
+.container{
+	background: #ffffff;
+}
+h3, h2 {
+	color: #FCAC03 !important;
+	font-size: 2em;
+	padding: 1.5%;
+}
+.btn, .navbar-toggler{
+	background: #FCAC03 !important;
+	border: none !important;
+}
+#btnHeader{
+	margin-bottom: 10px;
+}
+.input-group{
+	margin-bottom: 16px;
+}
+body{
+	margin-top: 150px !important;
+	margin-bottom: 120px !important;
+	font-family: 'AmbleRegular';
+	background: #ffffff;
+}
+#reservation-form{
+	margin-right: 10px;
+	text-align: left;
+	color: #ffffff;
+	float: right;
+}
+.page-header{
+	padding: 10px 10px 10px 10px;
+	background: url(../images/hd-bg.png);
+}
+.h-logo{
+	float: left;
+}
+.social img:hover {
+	opacity: 0.7;
+}
+/*--Footer--*/
+.page-footer {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	position: fixed;
+	text-align: center;
+	vertical-align: middle;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 12%;
+	background: url(../images/hd-bg.png);
+	color: #FFFFFF;
+}
+/* add class disabled for tag a in footer (which not working) */
+.disabled{
+	pointer-events: none;
+	cursor: default;
+}
+th, td {
+	text-align: left;
+	vertical-align: middle;
+	padding: 8px;
+}
+th {
+	background-color: #FCAC03;
+	color: black;
+}
+tr:nth-child(even) {
+	background-color: #F2F2F2;
+}
+/* hide otherRow */
+.otherRow{
+	display: none;
+}
+.table-hover tbody tr:hover td, .table-hover tbody .selected{
+	background-color: rgba(252, 172, 3, 0.3);
+}
+.loader {
+	margin: auto;
+	border: 16px solid #f3f3f3; /* Light grey */
+	border-top: 16px solid #FCAC03;
+	border-radius: 50%;
+	width: 120px;
+	height: 120px;
+	animation: spin 2s linear infinite;
+}
+.page{
+	display: none;
+}
+/* loader */
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+.spectacle {
+	margin-bottom: 10px;
+}
+#hidenRep{
+	display: none;
+}
+#btnShowRep{
+	position: fixed;
+	right: 20px;
+	bottom: 150px;
+	outline: none;
+	overflow: hidden;
+	transition: all 0.3s linear;
+	opacity: 1;
+	display: none;
+}
+/* arrow to top */
+#backtop {
+	position: fixed;
+	right: 20px;
+	bottom: 110px;
+	outline: none;
+	overflow: hidden;
+	font-size: 14px;
+	transition: all 0.3s linear;
+	opacity: 1;
+	display: none;
+}
+#backtop.mcOut {
+	opacity: 0;
+}
+.nav{
+	overflow: hidden;
+}
+#icon-search, #icon-user{
+	color: #ffffff;
+}
+.fab{
+	color: #FCAC03;
+	font-size: 2em;
+}
+.dropdown-toggle, #genreSelect {
+	background: #FFFFFF !important;
+}
+#search-btn{
+	margin-bottom: 10px;
+}
+/* bouton pour valider une représentation */
+.hide-td{
+	visibility: hidden;
+	background-color: #FFFFFF !important;
+	border: none !important;
+}
+.btn-validRep{
+	display: block !important;
+	overflow: hidden;
+}
+/* hide for small devices */
+@media screen and (max-width: 576px) {
+	#labBienvenue, .h-logo{
+		display: none;
+	}
+	#btnSearch{
+		margin-right: 100px;
+	}
+	.page-footer{
+		overflow: scroll;
+	}
+}
